@@ -3,7 +3,7 @@ import numpy as np
 import serial
 import time
 
-# --- Arduino Serial Setup ---
+# Arduino Serial Setup 
 # Change '/dev/ttyUSB0' or '/dev/ttyACM0' to match your Arduino port
 try:
     arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
@@ -13,7 +13,7 @@ except:
     arduino = None
     print("Arduino not found. Running without serial output.")
 
-# --- Camera Setup ---
+# Camera Setup 
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     cap = cv2.VideoCapture(1)
@@ -46,7 +46,7 @@ while True:
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    # --- Color masks ---
+    # Color masks 
     mask_red = (
         cv2.inRange(hsv, np.array([0,   150, 50]), np.array([10,  255, 255])) |
         cv2.inRange(hsv, np.array([170, 150, 50]), np.array([180, 255, 255]))
@@ -62,7 +62,7 @@ while True:
         ('Y', mask_yellow, (0,   255, 255), 'Yellow'),
     ]
 
-    # ── Window 1: Live camera stream with all bounding boxes ──────────────────
+    # Window 1: Live camera stream with all bounding boxes
     stream = frame.copy()
 
     for letter, mask, box_color, label in color_data:
@@ -83,7 +83,7 @@ while True:
 
     cv2.imshow('Camera Stream', stream)
 
-    # ── Window 2: 2x2 filtered color masks ───────────────────────────────────
+    # Window 2: 2x2 filtered color masks 
     # Convert each binary mask to a 3-channel BGR image tinted in its color
     def tint_mask(mask, bgr_color):
         colored = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)
@@ -112,7 +112,7 @@ while True:
 
     cv2.imshow('Color Filters (Red | Blue / Green | Yellow)', grid)
 
-    # Koen was here
+    # Press q to exit
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
