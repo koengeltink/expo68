@@ -1,0 +1,16 @@
+Camera
+Captures a live video stream at 640x480.
+Color Detection
+Every frame is scanned for 4 colors: Red, Blue, Green and Yellow. When a color is found, a labeled bounding box is drawn around it.
+Two Windows
+
+Camera Stream — normal camera view with colored boxes drawn around detected colors
+Color Filters — split into 4 panels, each showing only the pixels of that color (Red | Blue / Green | Yellow)
+
+Arduino Communication
+
+If a detected color covers more than 10,000 pixels it sends a single letter over USB serial to the Arduino: R, G, B or Y
+A 1.5 second cooldown prevents sending the same letter repeatedly
+Any reply from the Arduino is printed in the terminal
+
+Press Q to quit.
