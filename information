@@ -63,7 +63,6 @@ N/A
 10) Install pyqt5 designer (for GUI):
 
 sudo apt install qttools5-dev-tools -y
-sudo apt install qt5-default -y
 
 11) Open virtual enviroment:
 
