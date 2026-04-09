@@ -24,10 +24,10 @@ cap.set(3, 640)
 cap.set(4, 480)
 
 # Pixel area threshold to trigger Arduino signal
-PIXEL_THRESHOLD = 5000
+PIXEL_THRESHOLD = 10000
 
 # Cooldown to avoid spamming Arduino (seconds)
-COOLDOWN = 0.5
+COOLDOWN = 1.5
 last_sent = {}
 
 def send_signal(letter):
@@ -118,7 +118,7 @@ while True:
 
     cv2.imshow('Color Filters (Red | Blue / Green | Yellow)', grid)
 
-    # Koen was here
+    # Press q to exit
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
