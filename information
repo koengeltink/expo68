@@ -42,10 +42,23 @@ sudo apt install git -y
 
 git --version
 
-9) Then configure your identity:
+9) Go to right location
 
-git config --global user.name "same name github account"
-git config --global user.email "same email github account"
+cd ~/expo-project                                
+
+10) Clone git repository so it links to github
+
+git clone https://github.com/koengeltink/expo68.git  
+
+11) Then configure your identity:
+
+git config --global user.name "same name github account 'koengeltink' "
+git config --global user.email "same email github account 'koen.geltink@gmail.com' "
+
+12) Ask Koen Geltink for tokon so that you can push pull freely to and from github
+
+N/A
+
 
 10) Install pyqt5 designer (for GUI):
 
