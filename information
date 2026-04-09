@@ -59,16 +59,25 @@ git config --global user.email "same email github account 'koen.geltink@gmail.co
 
 N/A
 
+--- Installing software for GUI not needed for only vision ---
 
-10) Install pyqt5 designer (for GUI):
+13) Leave virtual envorminet
 
-sudo apt install qttools5-dev-tools -y
+deactivate
 
-11) Open virtual enviroment:
+14) Install pyqt5 globally
+
+sudo apt install python3-pyqt5 -y
+
+15) Recreate venv with access to system packages
+
+cd ~/expo-project
+python3 -m venv opencv-env --system-site-packages
+
+16) Open virtual enviroment:
 
 source opencv-env/bin/activate
 
-12) Install pyqt5 in virtual enviroment:
+17) Verify pyqt5 works
 
-pip install pyqt5
-pip install pyqt5-tools
+python3 -c "import PyQt5; print('PyQt5 works')"
