@@ -40,8 +40,8 @@ while True:
     cv2.imshow('Camera Stream', frame)
     cv2.imshow('Mask', mask)
 
-    # Press ESC to exit
-    if cv2.waitKey(1) & 0xFF == 27:
+    # Press 'q' to exit
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 # Release camera and close windows
