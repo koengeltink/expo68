@@ -1,0 +1,62 @@
+#Information
+
+General info:
+
+Name raspberry account: expo68
+Password raspberry account: Expo68
+
+Connect raspberry pi to laptop via ethernet cable and on laptop via control panel enable wifi sharing of ethernet so that pi can use wifi via laptop.
+
+0) Setup OS on raspberry first then continue with steps below.
+
+1) Create folder: 
+
+mkdir expo-project
+
+2) Open folder:
+
+cd expo-project
+
+3) Create virtual inveroment:
+
+python3 -m venv opencv-env
+
+4) Open virtual inveroment:
+
+source opencv-env/bin/activate
+
+5) Install opencv into virtual invorment:
+
+pip install opencv-python
+
+6) Leave virtual invorment:
+
+deactivate
+
+7) Install git globally:
+
+sudo apt update
+sudo apt install git -y
+
+8) Verify install:
+
+git --version
+
+9) Then configure your identity:
+
+git config --global user.name "same name github account"
+git config --global user.email "same email github account"
+
+10) Install pyqt5 designer (for GUI):
+
+sudo apt install qttools5-dev-tools -y
+sudo apt install qt5-default -y
+
+11) Open virtual enviroment:
+
+source opencv-env/bin/activate
+
+12) Install pyqt5 in virtual enviroment:
+
+pip install pyqt5
+pip install pyqt5-tools
