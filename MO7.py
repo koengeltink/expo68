@@ -6,7 +6,7 @@ from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.uic import loadUi
 
 # ── UART config ──────────────────────────────────────
-UART_PORT  = '/dev/ttyS0'  # change to your port
+UART_PORT  = '/dev/ttyUSB0'  # change to your port
 BAUDRATE   = 9600
 UI_FILE    = 'MO7.ui'
 # ─────────────────────────────────────────────────────
