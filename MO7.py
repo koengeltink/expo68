@@ -50,8 +50,9 @@ class MainWindow(QMainWindow):
         self.thread.start()
 
     def on_slider_change(self, value):
-        self.ser.write(f"{value}\n".encode())
-        print(f"Sent: {value}")          # shows in terminal for debugging
+        message = f"G {value},"
+        self.ser.write(message.encode())
+        print(f"Sent: {message}")          # shows in terminal for debugging         
 
     def on_ack(self, message):
         print(f"ACK from PYQN: {message}")   # shows in terminal for debugging
