@@ -55,7 +55,7 @@ class MainWindow(QMainWindow):
         print(f"Sent: {message}")          # shows in terminal for debugging         
 
     def on_ack(self, message):
-        print(f"ACK from PYQN: {message}")   # shows in terminal for debugging
+        print(f"From PYQN: {message}")   # shows in terminal for debugging
 
     def closeEvent(self, event):
         self.receiver.stop()
