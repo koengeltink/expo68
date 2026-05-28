@@ -24,10 +24,16 @@ class App(QMainWindow):
         # =====================================================
         # SETTINGS
         # =====================================================
-        self.COOLDOWN = 1.5
+        self.COOLDOWN = 10
         self.last_sent = {}
 
-        self.lap_count = {"red": 0, "green": 0, "blue": 0, "purple": 0}
+        self.lap_count = {
+            "red": 0,
+            "green": 0,
+            "blue": 0,
+            "purple": 0
+        }
+
         self.total_laps = 5
         self.race_running = False
 
@@ -89,6 +95,7 @@ class App(QMainWindow):
         # Buttons
         self.start_button.clicked.connect(self.start_pressed)
         self.stop_button.clicked.connect(self.stop_pressed)
+        self.reset_button.clicked.connect(self.reset_pressed)
 
         # =====================================================
         # SERIAL / UART
@@ -97,6 +104,7 @@ class App(QMainWindow):
             self.arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
             time.sleep(2)
             print("Arduino connected.")
+
         except:
             self.arduino = None
             print("Arduino not found.")
@@ -140,48 +148,88 @@ class App(QMainWindow):
     # =========================================================
 
     def send_uart(self, message):
+
         if self.arduino:
             self.arduino.write((message + "\n").encode())
             print(f"Sent: {message}")
 
     def start_pressed(self):
+
         self.total_laps = self.lap_counter.value()
-        self.lap_count = {"red": 0, "green": 0, "blue": 0, "purple": 0}
+
+        self.lap_count = {
+            "red": 0,
+            "green": 0,
+            "blue": 0,
+            "purple": 0
+        }
+
         self.last_sent = {}
+
         self.race_running = True
 
         self.send_uart(f"setlaps {self.total_laps}")
+
         time.sleep(0.1)
+
         self.send_uart("racestart")
 
         print(f"START pressed | laps = {self.total_laps}")
 
     def stop_pressed(self):
+
         self.race_running = False
+
         self.send_uart("finish")
+
         print("STOP pressed")
 
+    def reset_pressed(self):
+
+        self.race_running = False
+
+        self.lap_count = {
+            "red": 0,
+            "green": 0,
+            "blue": 0,
+            "purple": 0
+        }
+
+        self.last_sent = {}
+
+        self.send_uart("reset")
+
+        print("RESET pressed")
+
     def send_color_signal(self, letter):
+
         if not self.race_running:
             return
 
         now = time.time()
+
         color = self.letter_to_color[letter]
 
         if (
             letter not in self.last_sent
             or now - self.last_sent[letter] > self.COOLDOWN
         ):
+
             if self.lap_count[color] >= self.total_laps:
-                return  # already finished, ignore
+                return
 
             self.send_uart(f"{color} stop")
+
             self.lap_count[color] += 1
+
             self.last_sent[letter] = now
 
             if self.lap_count[color] < self.total_laps:
+
                 time.sleep(0.05)
+
                 self.send_uart(f"{color} start")
+
             else:
                 print(f"{color} finished all laps!")
 
@@ -190,11 +238,14 @@ class App(QMainWindow):
     # =========================================================
 
     def tint_mask(self, mask, bgr_color):
+
         colored = np.zeros(
             (mask.shape[0], mask.shape[1], 3),
             dtype=np.uint8
         )
+
         colored[mask > 0] = bgr_color
+
         return colored
 
     # =========================================================
@@ -205,11 +256,14 @@ class App(QMainWindow):
 
         # Read serial messages
         if self.arduino and self.arduino.in_waiting > 0:
+
             msg = self.arduino.readline().decode().strip()
+
             print(f"Arduino says: {msg}")
 
         # Read camera frame
         ret, frame = self.cap.read()
+
         if not ret:
             print("Cannot receive frame")
             return
@@ -232,8 +286,8 @@ class App(QMainWindow):
         mask_red = (
             cv2.inRange(
                 hsv,
-                np.array([0,   150, red_v]),
-                np.array([10,  255, 255])
+                np.array([0, 150, red_v]),
+                np.array([10, 255, 255])
             )
             |
             cv2.inRange(
@@ -245,8 +299,8 @@ class App(QMainWindow):
 
         mask_green = cv2.inRange(
             hsv,
-            np.array([40,  70,  green_v]),
-            np.array([80,  255, 255])
+            np.array([40, 70, green_v]),
+            np.array([80, 255, 255])
         )
 
         mask_blue = cv2.inRange(
@@ -257,7 +311,7 @@ class App(QMainWindow):
 
         mask_purple = cv2.inRange(
             hsv,
-            np.array([125, 80,  purple_v]),
+            np.array([125, 80, purple_v]),
             np.array([165, 255, 255])
         )
 
@@ -266,10 +320,10 @@ class App(QMainWindow):
         # =====================================================
 
         color_data = [
-            ("R", "red",    mask_red,    (0,   0,   255), "Red"),
-            ("G", "green",  mask_green,  (0,   255, 0  ), "Green"),
-            ("B", "blue",   mask_blue,   (255, 0,   0  ), "Blue"),
-            ("P", "purple", mask_purple, (255, 0,   255), "Purple")
+            ("R", "red", mask_red, (0, 0, 255), "Red"),
+            ("G", "green", mask_green, (0, 255, 0), "Green"),
+            ("B", "blue", mask_blue, (255, 0, 0), "Blue"),
+            ("P", "purple", mask_purple, (255, 0, 255), "Purple")
         ]
 
         # =====================================================
@@ -289,10 +343,15 @@ class App(QMainWindow):
             total_area = 0
 
             for cnt in contours:
+
                 area = cv2.contourArea(cnt)
+
                 if area > 500:
+
                     total_area += area
+
                     x, y, w, h = cv2.boundingRect(cnt)
+
                     cv2.rectangle(
                         stream,
                         (x, y),
@@ -300,6 +359,7 @@ class App(QMainWindow):
                         box_color,
                         2
                     )
+
                     cv2.putText(
                         stream,
                         f"{label}: {int(total_area)}",
@@ -319,27 +379,34 @@ class App(QMainWindow):
         # FILTER PANELS
         # =====================================================
 
-        panel_red    = self.tint_mask(mask_red,    (0,   0,   255))
-        panel_green  = self.tint_mask(mask_green,  (0,   255, 0  ))
-        panel_blue   = self.tint_mask(mask_blue,   (255, 0,   0  ))
-        panel_purple = self.tint_mask(mask_purple, (255, 0,   255))
+        panel_red = self.tint_mask(mask_red, (0, 0, 255))
+        panel_green = self.tint_mask(mask_green, (0, 255, 0))
+        panel_blue = self.tint_mask(mask_blue, (255, 0, 0))
+        panel_purple = self.tint_mask(mask_purple, (255, 0, 255))
 
         for img, label, color in [
-            (panel_red,    "Red",    (0,   0,   255)),
-            (panel_green,  "Green",  (0,   255, 0  )),
-            (panel_blue,   "Blue",   (255, 0,   0  )),
-            (panel_purple, "Purple", (255, 0,   255))
+            (panel_red, "Red", (0, 0, 255)),
+            (panel_green, "Green", (0, 255, 0)),
+            (panel_blue, "Blue", (255, 0, 0)),
+            (panel_purple, "Purple", (255, 0, 255))
         ]:
+
             cv2.putText(
-                img, label, (10, 30),
+                img,
+                label,
+                (10, 30),
                 cv2.FONT_HERSHEY_SIMPLEX,
-                1, color, 2
+                1,
+                color,
+                2
             )
 
-        top    = np.hstack([panel_red,   panel_green])
-        bottom = np.hstack([panel_blue,  panel_purple])
-        grid   = np.vstack([top, bottom])
-        grid   = cv2.resize(grid, (1280, 720))
+        top = np.hstack([panel_red, panel_green])
+        bottom = np.hstack([panel_blue, panel_purple])
+
+        grid = np.vstack([top, bottom])
+
+        grid = cv2.resize(grid, (1280, 720))
 
         cv2.imshow("Color Filters", grid)
 
@@ -351,11 +418,16 @@ class App(QMainWindow):
     # =========================================================
 
     def closeEvent(self, event):
+
         self.timer.stop()
+
         self.cap.release()
+
         if self.arduino:
             self.arduino.close()
+
         cv2.destroyAllWindows()
+
         event.accept()
 
 
@@ -364,6 +436,9 @@ class App(QMainWindow):
 # =============================================================
 
 app = QApplication(sys.argv)
+
 window = App()
+
 window.show()
+
 sys.exit(app.exec_())
