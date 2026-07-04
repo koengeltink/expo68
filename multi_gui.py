@@ -95,7 +95,6 @@ class App(QMainWindow):
         # Buttons
         self.start_button.clicked.connect(self.start_pressed)
         self.stop_button.clicked.connect(self.stop_pressed)
-        self.reset_button.clicked.connect(self.reset_pressed)
 
         # =====================================================
         # SERIAL / UART
@@ -183,23 +182,6 @@ class App(QMainWindow):
         self.send_uart("finish")
 
         print("STOP pressed")
-
-    def reset_pressed(self):
-
-        self.race_running = False
-
-        self.lap_count = {
-            "red": 0,
-            "green": 0,
-            "blue": 0,
-            "purple": 0
-        }
-
-        self.last_sent = {}
-
-        self.send_uart("reset")
-
-        print("RESET pressed")
 
     def send_color_signal(self, letter):
 
@@ -305,7 +287,7 @@ class App(QMainWindow):
 
         mask_blue = cv2.inRange(
             hsv,
-            np.array([100, 150, blue_v]),
+            np.array([90, 150, blue_v]),
             np.array([140, 255, 255])
         )
 
